@@ -93,6 +93,7 @@
   }
 
   * { box-sizing: border-box; }
+  canvas, svg, img { max-width: 100%; }
   html { scroll-behavior: smooth; }
   body {
     margin: 0;
@@ -204,7 +205,7 @@
   .head { display: grid; gap: 1.1rem; margin-bottom: clamp(2rem, 5vh, 3.5rem); }
   .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
   .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; align-items: start; }
-  @media (max-width: 900px) { .grid-3 { grid-template-columns: 1fr; } .grid-2 { grid-template-columns: 1fr; } }
+  @media (max-width: 900px) { .grid-3 { grid-template-columns: minmax(0, 1fr); } .grid-2 { grid-template-columns: minmax(0, 1fr); } }
 
   .card {
     background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card);
@@ -246,7 +247,7 @@
   .step h4 { font-size: 1rem; font-weight: 600; font-family: var(--body); }
   .step p { font-size: 0.86rem; color: var(--ink-2); }
   @media (max-width: 1100px) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-  @media (max-width: 640px) { .steps { grid-template-columns: 1fr; } }
+  @media (max-width: 640px) { .steps { grid-template-columns: minmax(0, 1fr); } }
 
   .limits { background: var(--accent-soft); border-radius: var(--r-card); padding: 1.6rem 1.7rem; display: grid; gap: 0.9rem; }
   .limits h3 { font-size: 1.2rem; }
@@ -265,26 +266,26 @@
   .site .n { font-weight: 600; }
   .site .m { font-family: var(--mono); font-size: 0.8rem; color: var(--ink-2); }
   .site .d { font-size: 0.9rem; color: var(--ink-2); }
-  @media (max-width: 720px) { .site { grid-template-columns: 1fr; gap: 0.25rem; } }
+  @media (max-width: 720px) { .site { grid-template-columns: minmax(0, 1fr); gap: 0.25rem; } }
 
   .people { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
   .person { display: grid; gap: 0.5rem; padding: 1.4rem; border-radius: var(--r-card); background: var(--surface); border: 1px solid var(--line); }
   .person .role { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
   .person h3 { font-size: 1.25rem; }
   .person p { color: var(--ink-2); font-size: 0.95rem; }
-  @media (max-width: 900px) { .people { grid-template-columns: 1fr; } }
+  @media (max-width: 900px) { .people { grid-template-columns: minmax(0, 1fr); } }
 
   .close { background: var(--ink); color: var(--ground); border-radius: var(--r-frame); padding: clamp(2.2rem, 5vw, 3.5rem); display: grid; gap: 1.2rem; grid-template-columns: 1.3fr 1fr; align-items: center; }
   .close h2 { font-size: clamp(1.8rem, 3.4vw, 2.8rem); line-height: 1.1; }
   .close p { color: color-mix(in srgb, var(--ground) 72%, transparent); max-width: 52ch; }
   .close .btn-primary { background: var(--accent); color: #131820; justify-self: start; }
   .close .mail { font-family: var(--mono); font-size: 0.95rem; word-break: break-all; }
-  @media (max-width: 860px) { .close { grid-template-columns: 1fr; } }
+  @media (max-width: 860px) { .close { grid-template-columns: minmax(0, 1fr); } }
 
   footer { padding: 2.5rem 0 3rem; color: var(--ink-3); font-size: 0.82rem; }
   footer .wrap { display: grid; gap: 0.5rem; grid-template-columns: 1fr auto; align-items: start; }
   footer .brand { color: var(--ink-2); }
-  @media (max-width: 720px) { footer .wrap { grid-template-columns: 1fr; } }
+  @media (max-width: 720px) { footer .wrap { grid-template-columns: minmax(0, 1fr); } }
 
   /* --------------------------------------------- reveal y movimiento */
   .reveal { opacity: 0; transform: translateY(12px); transition: opacity .7s ease, transform .7s ease; }
@@ -384,7 +385,7 @@
 
     <div class="grid-2">
       <div class="frame reveal">
-        <div class="frame-head"><span>Velocidad del terreno · 2021–2026</span><span>Sentinel-1 · track 18 · 128 m</span></div>
+        <div class="frame-head"><span>Velocidad 2021–2026</span><span>S1 · track 18 · 128 m</span></div>
         <canvas id="mapa" width="960" height="720" role="img" aria-label="Mapa de velocidad del terreno alrededor de Sauzal Bonito con dos cuencos de hundimiento marcados"></canvas>
         <div class="frame-foot">
           <span><span class="dot" style="background: var(--sink)"></span>se hunde</span>
@@ -814,6 +815,7 @@
       var etiqueta = m.nombre;
       var tw = mctx.measureText(etiqueta).width, lx = x + r + 8, ly = y;
       if (lx + tw + 10 > W) { lx = x - r - 8 - tw - 10; }
+      if (lx < 6) { lx = Math.max(6, Math.min(W - tw - 12, x - tw / 2)); ly = y + r + 14; }   // no entra a los lados: abajo, centrada
       mctx.fillStyle = rgba(hexRgb(tk.surface), 0.85); mctx.fillRect(lx - 5, ly - 10, tw + 10, 20);
       mctx.fillStyle = tk.ink; mctx.fillText(etiqueta, lx, ly);
     });
@@ -832,7 +834,9 @@
     var cont = document.getElementById("serie");
     if (!D || !D.series || !D.series.fortin || !D.series.pueblo) { cont.innerHTML = '<p style="padding:1rem 1.25rem" class="fine">Sin datos de series.</p>'; return; }
     var tk = tokens();
-    var W = 960, H = 300, ml = 52, mr = 18, mt = 18, mb = 34;
+    // en pantallas angostas el viewBox se achica para que el texto no quede en miniatura
+    var angosto = (cont.clientWidth || 960) < 640;
+    var W = angosto ? 560 : 960, H = angosto ? 260 : 300, ml = 46, mr = 16, mt = 18, mb = 34;
     var f = D.series.fortin, p = D.series.pueblo;
     var t0 = new Date(f.fechas[0]).getTime(), t1 = new Date(f.fechas[f.fechas.length - 1]).getTime();
     var todos = f.mediana_mm.concat(p.mediana_mm);
