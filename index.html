@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Motus</title>
+<meta name="description" content="Motus — Earth in motion. Vigilancia satelital de estabilidad del terreno para infraestructura energética, desde la Patagonia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geologica:wght@200;300;400;600&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* ------------------------------------------------------------------
+     Motus · Earth in motion
+     Paleta: basalto nocturno y hueso frío como suelos; ámbar de fósforo
+     de radar como único acento; coral/cian reservados para el dato.
+     Tres estados de tema: :root = claro; media query = sistema oscuro;
+     [data-theme] = elección explícita. Ningún color vive solo en un bloque.
+     ------------------------------------------------------------------ */
+  :root {
+    color-scheme: light;
+    --ground:   #F4F5F2;
+    --surface:  #FFFFFF;
+    --raised:   #E9EBE6;
+    --ink:      #131820;
+    --ink-2:    #4F5865;
+    --ink-3:    #8A93A0;
+    --line:     #D9DCD6;
+    --line-2:   #C6CAC3;
+    --accent:   #B8720F;
+    --accent-2: #8F5709;
+    --accent-soft: #F3E3C7;
+    --sink:     #D6482F;   /* hundimiento: se aleja del satélite */
+    --sink-2:   #A63419;
+    --lift:     #1F7FB8;   /* levantamiento: se acerca */
+    --lift-2:   #135A85;
+    --still:    #B7BCB8;   /* estable */
+    --hero-fog: rgba(244,245,242,0.55);
+    --shadow:   0 1px 2px rgba(19,24,32,0.06), 0 12px 40px -18px rgba(19,24,32,0.25);
+
+    --display: "Geologica", "Segoe UI Variable Display", system-ui, sans-serif;
+    --body:    "Instrument Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono:    "IBM Plex Mono", "Cascadia Mono", ui-monospace, Consolas, monospace;
+
+    --maxw: 76rem;
+    --gutter: clamp(1.25rem, 5vw, 4.5rem);
+    --r-card: 22px;
+    --r-frame: 26px;
+    --r-pill: 999px;
+    --mask-hole: 22%;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ground:   #0B0E13;
+      --surface:  #121720;
+      --raised:   #1A2029;
+      --ink:      #E9ECEF;
+      --ink-2:    #98A2AE;
+      --ink-3:    #5E6874;
+      --line:     #232B36;
+      --line-2:   #2F3947;
+      --accent:   #F2A33A;
+      --accent-2: #FFC069;
+      --accent-soft: #3A2A12;
+      --sink:     #FF6A4D;
+      --sink-2:   #FF9A85;
+      --lift:     #4FB3E8;
+      --lift-2:   #8FD0F4;
+      --still:    #3A4453;
+      --hero-fog: rgba(11,14,19,0.45);
+      --shadow:   0 1px 2px rgba(0,0,0,0.4), 0 16px 48px -20px rgba(0,0,0,0.7);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ground:   #0B0E13;
+    --surface:  #121720;
+    --raised:   #1A2029;
+    --ink:      #E9ECEF;
+    --ink-2:    #98A2AE;
+    --ink-3:    #5E6874;
+    --line:     #232B36;
+    --line-2:   #2F3947;
+    --accent:   #F2A33A;
+    --accent-2: #FFC069;
+    --accent-soft: #3A2A12;
+    --sink:     #FF6A4D;
+    --sink-2:   #FF9A85;
+    --lift:     #4FB3E8;
+    --lift-2:   #8FD0F4;
+    --still:    #3A4453;
+    --hero-fog: rgba(11,14,19,0.45);
+    --shadow:   0 1px 2px rgba(0,0,0,0.4), 0 16px 48px -20px rgba(0,0,0,0.7);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+  h1, h2, h3, h4 { font-family: var(--display); margin: 0; text-wrap: balance; letter-spacing: -0.02em; font-weight: 400; }
+  p { margin: 0; text-wrap: pretty; }
+  ul { margin: 0; padding: 0; list-style: none; }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding-inline: var(--gutter); }
+  .eyebrow {
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); display: inline-flex; align-items: center; gap: 0.6rem;
+  }
+  .eyebrow::before { content: ""; width: 1.4rem; height: 1px; background: var(--accent); }
+  .h2 { font-size: clamp(1.9rem, 3.6vw, 3rem); line-height: 1.08; max-width: 24ch; }
+  .lede { font-size: clamp(1.1rem, 1.5vw, 1.3rem); color: var(--ink-2); max-width: 58ch; line-height: 1.55; }
+  .fine { font-size: 0.9rem; color: var(--ink-2); max-width: 66ch; }
+  .fine strong { color: var(--ink); font-weight: 600; }
+
+  /* --------------------------------------------- navegación */
+  .nav {
+    position: sticky; top: 0; z-index: 30;
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    background: color-mix(in srgb, var(--ground) 78%, transparent);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: 3.75rem; }
+  .brand { font-family: var(--display); font-weight: 600; letter-spacing: 0.22em; font-size: 0.95rem; text-decoration: none; }
+  .nav-links { display: flex; gap: 1.5rem; font-size: 0.92rem; }
+  .nav-links a { text-decoration: none; color: var(--ink-2); }
+  .nav-links a:hover { color: var(--ink); }
+  .theme {
+    appearance: none; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink-2);
+    font: inherit; font-size: 0.8rem; padding: 0.35rem 0.8rem; border-radius: var(--r-pill); cursor: pointer;
+    display: inline-flex; gap: 0.45rem; align-items: center;
+  }
+  .theme:hover { color: var(--ink); border-color: var(--ink-3); }
+  @media (max-width: 720px) { .nav-links { display: none; } }
+
+  /* --------------------------------------------- hero */
+  .hero {
+    position: relative; min-height: 100svh; display: grid; grid-template-rows: 1fr auto;
+    grid-template-columns: minmax(0, 1fr);   /* el nombre gigante no puede ensanchar la retícula */
+    isolation: isolate; overflow: hidden;
+  }
+  .hero canvas {
+    position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; display: block;
+  }
+  .hero::after {
+    content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 45%, transparent 0%, var(--hero-fog) 100%),
+      linear-gradient(to bottom, transparent 55%, var(--ground) 100%);
+  }
+  .hero-word {
+    position: relative; z-index: 2; align-self: center; text-align: center; padding-top: 6vh;
+    pointer-events: none; will-change: transform, opacity; min-width: 0; max-width: 100%;
+  }
+  .hero-word h1 {
+    font-size: clamp(3.4rem, 19vw, 19rem); font-weight: 200; letter-spacing: 0.06em; line-height: 0.95;
+    color: var(--ink);
+    -webkit-mask-image: radial-gradient(ellipse 60% 70% at 50% 50%, transparent 0%, transparent var(--mask-hole), #000 calc(var(--mask-hole) + 34%));
+            mask-image: radial-gradient(ellipse 60% 70% at 50% 50%, transparent 0%, transparent var(--mask-hole), #000 calc(var(--mask-hole) + 34%));
+  }
+  .hero-word .tag {
+    font-family: var(--display); font-weight: 300; font-size: clamp(1.1rem, 2vw, 1.5rem);
+    letter-spacing: 0.32em; text-transform: uppercase; color: var(--ink-2); margin-top: 0.4rem;
+  }
+  .hero-copy {
+    position: relative; z-index: 2; display: grid; gap: 1.4rem; padding-bottom: clamp(2rem, 6vh, 4rem);
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: end;
+  }
+  .hero-copy .lede { color: var(--ink); font-size: clamp(1.15rem, 1.7vw, 1.45rem); max-width: 30ch; line-height: 1.35; font-family: var(--display); font-weight: 300; }
+  .hero-copy .sub { color: var(--ink-2); max-width: 46ch; margin-top: 0.75rem; }
+  .ctas { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.25rem; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.8rem 1.35rem; border-radius: var(--r-pill);
+    font-weight: 500; font-size: 0.95rem; text-decoration: none; border: 1px solid transparent; transition: transform .15s ease, border-color .15s ease, background .15s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--ink); color: var(--ground); }
+  .btn-ghost { border-color: var(--line-2); color: var(--ink); background: color-mix(in srgb, var(--surface) 60%, transparent); }
+  .ticker {
+    justify-self: end; display: grid; gap: 0.35rem; text-align: right; font-family: var(--mono); font-size: 0.8rem; color: var(--ink-2);
+    padding: 0.9rem 1.1rem; border: 1px solid var(--line); border-radius: 18px; background: color-mix(in srgb, var(--surface) 72%, transparent);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  }
+  .ticker .big { font-size: 1.9rem; color: var(--ink); line-height: 1; font-weight: 500; }
+  .ticker .sink { color: var(--sink); }
+  .legend { display: inline-flex; gap: 0.5rem; align-items: center; }
+  .legend i { display: inline-block; width: 3.2rem; height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--sink) 0%, var(--still) 50%, var(--lift) 100%); }
+  @media (max-width: 860px) {
+    .hero-copy { grid-template-columns: minmax(0, 1fr); }
+    .ticker { justify-self: start; text-align: left; min-width: 0; max-width: 100%; }
+  }
+
+  /* --------------------------------------------- secciones */
+  section.block { padding-block: clamp(4.5rem, 11vh, 8rem); }
+  section.block + section.block { border-top: 1px solid var(--line); }
+  .head { display: grid; gap: 1.1rem; margin-bottom: clamp(2rem, 5vh, 3.5rem); }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; align-items: start; }
+  @media (max-width: 900px) { .grid-3 { grid-template-columns: 1fr; } .grid-2 { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card);
+    padding: 1.6rem 1.6rem 1.7rem; display: grid; gap: 0.9rem; align-content: start; box-shadow: var(--shadow);
+    transition: border-color .2s ease;
+  }
+  .card:hover { border-color: var(--line-2); }
+  .card h3 { font-size: 1.35rem; font-weight: 400; }
+  .card .norm { font-family: var(--mono); font-size: 0.74rem; color: var(--ink-3); letter-spacing: 0.04em; }
+  .card p { color: var(--ink-2); font-size: 0.98rem; }
+  .card .kicker { font-family: var(--display); font-weight: 300; font-size: 2.2rem; color: var(--accent); line-height: 1; }
+
+  .frame {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-frame); overflow: hidden; box-shadow: var(--shadow);
+  }
+  .frame .frame-head { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; padding: 1rem 1.25rem 0.5rem; font-family: var(--mono); font-size: 0.74rem; color: var(--ink-3); letter-spacing: 0.06em; text-transform: uppercase; }
+  .frame canvas { display: block; width: 100%; height: auto; }
+  .frame svg { display: block; width: 100%; height: auto; }
+  .frame .frame-foot { padding: 0.75rem 1.25rem 1rem; font-size: 0.85rem; color: var(--ink-2); display: flex; gap: 1.25rem; flex-wrap: wrap; }
+  .dot { display: inline-block; width: 0.6rem; height: 0.6rem; border-radius: 50%; margin-right: 0.4rem; vertical-align: -1px; }
+
+  .kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .kpi { background: var(--raised); border-radius: 18px; padding: 1.1rem 1.2rem; display: grid; gap: 0.25rem; }
+  .kpi .v { font-family: var(--display); font-weight: 300; font-size: clamp(1.8rem, 3vw, 2.4rem); line-height: 1; font-variant-numeric: tabular-nums; }
+  .kpi .v.sink { color: var(--sink); }
+  .kpi .k { font-size: 0.85rem; color: var(--ink-2); }
+  .kpi .s { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-3); }
+
+  .tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: 0.93rem; min-width: 40rem; }
+  th, td { text-align: left; padding: 0.8rem 1rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-family: var(--mono); font-weight: 500; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+  tr:last-child td { border-bottom: 0; }
+  td.num { white-space: nowrap; }
+
+  .steps { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0.75rem; counter-reset: paso; }
+  .step { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 1.1rem 1.1rem 1.2rem; display: grid; gap: 0.5rem; align-content: start; position: relative; }
+  .step::before { counter-increment: paso; content: counter(paso, decimal-leading-zero); font-family: var(--mono); font-size: 0.72rem; color: var(--accent); letter-spacing: 0.1em; }
+  .step h4 { font-size: 1rem; font-weight: 600; font-family: var(--body); }
+  .step p { font-size: 0.86rem; color: var(--ink-2); }
+  @media (max-width: 1100px) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 640px) { .steps { grid-template-columns: 1fr; } }
+
+  .limits { background: var(--accent-soft); border-radius: var(--r-card); padding: 1.6rem 1.7rem; display: grid; gap: 0.9rem; }
+  .limits h3 { font-size: 1.2rem; }
+  .limits li { display: grid; grid-template-columns: 1.1rem 1fr; gap: 0.7rem; font-size: 0.95rem; color: var(--ink); }
+  .limits li::before { content: "—"; color: var(--accent); }
+
+  .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+  .stat { border-top: 1px solid var(--line-2); padding-top: 1rem; display: grid; gap: 0.35rem; }
+  .stat .v { font-family: var(--display); font-weight: 200; font-size: clamp(2.4rem, 4.5vw, 3.6rem); line-height: 1; font-variant-numeric: tabular-nums; }
+  .stat .k { color: var(--ink-2); font-size: 0.92rem; }
+  @media (max-width: 800px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  .sites { display: grid; gap: 0; border: 1px solid var(--line); border-radius: var(--r-card); overflow: hidden; background: var(--surface); }
+  .site { display: grid; grid-template-columns: 1.3fr 1fr 2fr; gap: 1rem; padding: 1rem 1.3rem; border-bottom: 1px solid var(--line); align-items: baseline; }
+  .site:last-child { border-bottom: 0; }
+  .site .n { font-weight: 600; }
+  .site .m { font-family: var(--mono); font-size: 0.8rem; color: var(--ink-2); }
+  .site .d { font-size: 0.9rem; color: var(--ink-2); }
+  @media (max-width: 720px) { .site { grid-template-columns: 1fr; gap: 0.25rem; } }
+
+  .people { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+  .person { display: grid; gap: 0.5rem; padding: 1.4rem; border-radius: var(--r-card); background: var(--surface); border: 1px solid var(--line); }
+  .person .role { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+  .person h3 { font-size: 1.25rem; }
+  .person p { color: var(--ink-2); font-size: 0.95rem; }
+  @media (max-width: 900px) { .people { grid-template-columns: 1fr; } }
+
+  .close { background: var(--ink); color: var(--ground); border-radius: var(--r-frame); padding: clamp(2.2rem, 5vw, 3.5rem); display: grid; gap: 1.2rem; grid-template-columns: 1.3fr 1fr; align-items: center; }
+  .close h2 { font-size: clamp(1.8rem, 3.4vw, 2.8rem); line-height: 1.1; }
+  .close p { color: color-mix(in srgb, var(--ground) 72%, transparent); max-width: 52ch; }
+  .close .btn-primary { background: var(--accent); color: #131820; justify-self: start; }
+  .close .mail { font-family: var(--mono); font-size: 0.95rem; word-break: break-all; }
+  @media (max-width: 860px) { .close { grid-template-columns: 1fr; } }
+
+  footer { padding: 2.5rem 0 3rem; color: var(--ink-3); font-size: 0.82rem; }
+  footer .wrap { display: grid; gap: 0.5rem; grid-template-columns: 1fr auto; align-items: start; }
+  footer .brand { color: var(--ink-2); }
+  @media (max-width: 720px) { footer .wrap { grid-template-columns: 1fr; } }
+
+  /* --------------------------------------------- reveal y movimiento */
+  .reveal { opacity: 0; transform: translateY(12px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .btn:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top">MOTUS</a>
+    <nav class="nav-links" aria-label="Secciones">
+      <a href="#vigilamos">Qué vigilamos</a>
+      <a href="#caso">Caso Sauzal Bonito</a>
+      <a href="#metodo">Cómo funciona</a>
+      <a href="#estado">Estado</a>
+      <a href="#equipo">Equipo</a>
+    </nav>
+    <button class="theme" id="theme" type="button" aria-label="Cambiar tema"><span id="theme-label">Tema: sistema</span></button>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ======================================================= HERO -->
+<section class="hero" aria-label="Portada">
+  <canvas id="campo" aria-hidden="true"></canvas>
+  <div class="hero-word" id="hero-word">
+    <h1>MOTUS</h1>
+    <p class="tag">Earth in motion</p>
+  </div>
+  <div class="wrap hero-copy">
+    <div>
+      <p class="lede">Vigilancia satelital de la estabilidad del terreno alrededor de infraestructura energética.</p>
+      <p class="sub">Con el archivo completo de Sentinel-1 reconstruimos cómo se movió el terreno bajo un parque eólico, un ducto, una terminal de tanques o un yacimiento — año por año, milímetro por milímetro, sin instalar nada.</p>
+      <div class="ctas">
+        <a class="btn btn-primary" href="#caso">Ver el caso Sauzal Bonito</a>
+        <a class="btn btn-ghost" href="#contacto">Empezar con un sitio</a>
+      </div>
+    </div>
+    <div class="ticker" aria-live="off">
+      <span>Sauzal Bonito · Neuquén · medición real</span>
+      <span class="big" id="tick-fecha">2021</span>
+      <span>cuenco de Fortín de Piedra <span class="sink num" id="tick-mm">0 mm</span></span>
+      <span class="legend"><i></i> se hunde · estable · se levanta</span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= QUÉ VIGILAMOS -->
+<section class="block" id="vigilamos">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">Qué vigilamos</span>
+      <h2 class="h2">El terreno se mueve despacio. Nosotros lo medimos antes de que importe.</h2>
+      <p class="lede">La misma medición sirve para tres activos distintos. En los tres, lo que se mide es el terreno del entorno — no la estructura — y eso es exactamente lo que nadie está mirando.</p>
+    </div>
+    <div class="grid-3">
+      <article class="card reveal">
+        <span class="kicker">01</span>
+        <h3>Parques eólicos</h3>
+        <span class="norm">IEC TS 61400-28:2025 · integridad y extensión de vida</span>
+        <p>Asentamiento del terreno en el entorno de cada aerogenerador, reconstruido desde 2021. La norma pide evidencia para seguir operando una flota envejecida; el archivo satelital ya la tiene guardada.</p>
+        <p>Medido hoy: Comodoro Rivadavia, Puerto Madryn, Pomona y un barrido de parques en Argentina y España.</p>
+      </article>
+      <article class="card reveal">
+        <span class="kicker">02</span>
+        <h3>Ductos y tanques</h3>
+        <span class="norm">NAG-100 / ASME B31.8S · Res. SE 277/2025 (API 653)</span>
+        <p>Amenazas geológicas a lo largo de un corredor — laderas, cruces, bajadas de meseta — y asentamiento del terreno alrededor de una terminal de tanques. Una línea de base tomada antes del primer llenado no se puede tomar después.</p>
+        <p>La gestión de integridad ya exige evaluar estas amenazas; nosotros la alimentamos con medición continua en vez de recorridas.</p>
+      </article>
+      <article class="card reveal">
+        <span class="kicker">03</span>
+        <h3>Yacimientos</h3>
+        <span class="norm">Deformación por producción e inyección</span>
+        <p>Cuencos de hundimiento y levantamiento sobre áreas de explotación, con su serie temporal. Un dato objetivo que sirve igual a la operadora, a la provincia y al vecino — y que hoy nadie produce de forma operativa.</p>
+        <p>Nuestra primera medición en Vaca Muerta está abajo, con sus números.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= CASO -->
+<section class="block" id="caso">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">Caso · Sauzal Bonito, Neuquén</span>
+      <h2 class="h2">Extendimos cinco años un estudio publicado. Los cuencos siguen ahí.</h2>
+      <p class="lede">En 2022, un equipo del CONICET publicó en <em>Scientific Reports</em> dos cuencos de hundimiento cerca de Sauzal Bonito, medidos entre 2017 y 2020. Desde entonces la actividad en Vaca Muerta se multiplicó y nadie volvió a medir. Nosotros procesamos 2021–2026 con nuestro propio pipeline.</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="frame reveal">
+        <div class="frame-head"><span>Velocidad del terreno · 2021–2026</span><span>Sentinel-1 · track 18 · 128 m</span></div>
+        <canvas id="mapa" width="960" height="720" role="img" aria-label="Mapa de velocidad del terreno alrededor de Sauzal Bonito con dos cuencos de hundimiento marcados"></canvas>
+        <div class="frame-foot">
+          <span><span class="dot" style="background: var(--sink)"></span>se hunde</span>
+          <span><span class="dot" style="background: var(--still)"></span>estable</span>
+          <span><span class="dot" style="background: var(--lift)"></span>se levanta</span>
+          <span>escala ±8 mm/año en línea de visada</span>
+        </div>
+      </div>
+      <div style="display: grid; gap: 1rem;">
+        <div class="kpis reveal">
+          <div class="kpi"><span class="v sink num">−6,7</span><span class="k">mm/año en el cuenco de Fortín de Piedra</span><span class="s">agregado a 150 m · nivel «moderado»</span></div>
+          <div class="kpi"><span class="v sink num">−9,5</span><span class="k">mm/año, pico del cuenco NE</span><span class="s">a 10,7 km del pueblo · sin atribuir</span></div>
+          <div class="kpi"><span class="v num">37.276</span><span class="k">puntos de medición a 128 m</span><span class="s">95 % de celdas resueltas · coherencia 0,99</span></div>
+          <div class="kpi"><span class="v num">37<span style="font-size: 0.55em; color: var(--ink-3);">/100</span></span><span class="k">interferogramas corregidos antes de invertir</span><span class="s">saltos de ciclo detectados por cierre de fase</span></div>
+        </div>
+        <p class="fine reveal">El cuenco grande cae sobre pozos <span class="num">TPT.Nq.FP-*</span> operados por Tecpetrol en Fortín de Piedra, a 3,9 km del pueblo, según OpenStreetMap. <strong>El pueblo de Sauzal Bonito está estable.</strong> Medimos deformación; la relación con la actividad es la que estableció el estudio original.</p>
+      </div>
+    </div>
+
+    <div class="frame reveal" style="margin-top: 1.5rem;">
+      <div class="frame-head"><span>Desplazamiento acumulado · mediana de 400 m alrededor de cada punto</span><span>41 fechas · ene 2021 → ago 2026</span></div>
+      <div id="serie"></div>
+      <div class="frame-foot">
+        <span><span class="dot" style="background: var(--sink)"></span>Cuenco de Fortín de Piedra</span>
+        <span><span class="dot" style="background: var(--ink-3)"></span>Sauzal Bonito, el pueblo</span>
+        <span>mm en línea de visada; negativo = se aleja del satélite</span>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top: 1.5rem;">
+      <div class="tablewrap reveal">
+        <table>
+          <thead><tr><th>Contra el estudio publicado</th><th>Tamburini-Beliveau et al., 2022</th><th>Motus, 2026</th></tr></thead>
+          <tbody>
+            <tr><td>Período</td><td class="num">2017 – 2020</td><td class="num">2021 – 2026</td></tr>
+            <tr><td>Cuencos</td><td>2, de ~2,3 km de radio</td><td>2, de 3,8 y 1,8 km de diámetro equivalente</td></tr>
+            <tr><td>Velocidad</td><td class="num">−8,4 a −9,6 mm/año promedio</td><td class="num">mediana −5,1 y −5,4 · picos −7,4 y −9,5</td></tr>
+            <tr><td>Datos</td><td>Sentinel-1, ascendente y descendente</td><td>Sentinel-1, ascendente, 41 de 216 fechas</td></tr>
+            <tr><td>Costo de procesamiento</td><td>—</td><td class="num">100 créditos de 8.000 gratuitos por mes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="reveal" style="display: grid; gap: 0.9rem;">
+        <p class="fine"><strong>Qué significa.</strong> Cinco años después del fin de la serie publicada, la subsidencia sigue activa, al mismo orden de magnitud. Las velocidades verticales aproximadas son las de línea de visada divididas por 0,784 (incidencia de 38,4°, leída del producto).</p>
+        <p class="fine"><strong>Qué no significa.</strong> Con una sola geometría de visada no separamos el movimiento vertical del este-oeste, y somos ciegos al norte-sur. Los cuencos son compatibles con las zonas del estudio original; sus coordenadas exactas no fueron publicadas.</p>
+        <p class="fine">Fuente: Tamburini-Beliveau et al., <em>Assessment of ground deformation and seismicity in two areas of intense hydrocarbon production in the Argentinian Patagonia</em>, Scientific Reports 12:17968 (2022).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= MÉTODO -->
+<section class="block" id="metodo">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">Cómo funciona</span>
+      <h2 class="h2">Radar público, control de calidad propio, y un informe que dice de dónde salió cada número.</h2>
+      <p class="lede">Interferometría de radar sobre el archivo de Sentinel-1: cada pasada mide, en fase, cuánto cambió la distancia entre el satélite y el terreno. Apilando cientos de pasadas se reconstruye la historia de cada celda del suelo.</p>
+    </div>
+    <div class="steps reveal">
+      <div class="step"><h4>Archivo Sentinel-1</h4><p>Imágenes de radar de la ESA, gratuitas, cada 6 a 12 días desde 2015. Elegimos la órbita que mejor cubre el sitio.</p></div>
+      <div class="step"><h4>Interferogramas</h4><p>Procesados por ráfaga en ASF HyP3 (NASA), con un cupo gratuito mensual. Un sitio típico cuesta 100 créditos.</p></div>
+      <div class="step"><h4>Cierre de fase</h4><p>Cada trío de interferogramas tiene que cerrar a cero. El que no cierra sin coartada se corrige o se excluye antes de invertir.</p></div>
+      <div class="step"><h4>Inversión SBAS</h4><p>De los pares a la serie temporal de cada celda, con resolución exacta de las ambigüedades de ciclo.</p></div>
+      <div class="step"><h4>Correcciones</h4><p>Retardo atmosférico estratificado y turbulento, con el modelo de elevación; sensibilidad geométrica por posición.</p></div>
+      <div class="step"><h4>Informe</h4><p>Niveles por activo, series, avisos de calidad y una ficha de trazabilidad: versión, configuración y entradas de cada corrida.</p></div>
+    </div>
+
+    <div class="grid-2" style="margin-top: 2rem;">
+      <div class="limits reveal">
+        <h3>Límites que decimos antes de que los preguntes</h3>
+        <ul>
+          <li>Medimos el terreno del entorno, con celdas de 80 a 128 m. No medimos la fundación, el tanque ni la torre.</li>
+          <li>Una sola geometría de visada por defecto: vemos bien lo vertical y el este-oeste, y nada del norte-sur.</li>
+          <li>Medimos deformación. La causa —producción, carga, agua, geología— la aporta quien conoce el sitio.</li>
+          <li>No reemplaza al estudio geotécnico: dice dónde hacerlo primero, y vigila después.</li>
+        </ul>
+      </div>
+      <div class="reveal" style="display: grid; gap: 1rem; align-content: start;">
+        <p class="fine"><strong>Por qué el control de calidad importa.</strong> En Sauzal Bonito, 19 de 81 tríos de interferogramas no cerraban por un número entero de ciclos: errores de desenrollado que, sin corregir, inventan milímetros. El pipeline los detectó y corrigió 37 de 100 interferogramas antes de que tocaran un resultado.</p>
+        <p class="fine"><strong>Ciega a los nombres.</strong> Las posiciones de los activos vienen de OpenStreetMap o de un archivo con coordenadas. El método no sabe de quién es el parque ni el pozo, y por eso mide lo mismo para todos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= ESTADO -->
+<section class="block" id="estado">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">Estado del pipeline</span>
+      <h2 class="h2">No tenemos logos de clientes para mostrar. Tenemos esto.</h2>
+    </div>
+    <div class="stats reveal">
+      <div class="stat"><span class="v num">405</span><span class="k">pruebas automáticas que corren en cada cambio</span></div>
+      <div class="stat"><span class="v num">0<span style="font-size: 0.5em; color: var(--ink-3);">/23</span></span><span class="k">umbrales de decisión que se pueden cambiar sin que una prueba lo note</span></div>
+      <div class="stat"><span class="v num">128<span style="font-size: 0.5em; color: var(--ink-3);"> m</span></span><span class="k">celda de medición sobre estepa árida</span></div>
+      <div class="stat"><span class="v num">2021</span><span class="k">desde cuándo reconstruimos cada sitio, sin instalar nada</span></div>
+    </div>
+    <div class="sites reveal" style="margin-top: 2.5rem;">
+      <div class="site"><span class="n">Sauzal Bonito · Neuquén</span><span class="m">41 fechas · 37.276 puntos</span><span class="d">Extensión 2021–2026 de un estudio publicado. Dos cuencos activos; el pueblo estable.</span></div>
+      <div class="site"><span class="n">Comodoro Rivadavia · Chubut</span><span class="m">41 fechas · cobertura 97 %</span><span class="d">Parque eólico sobre un yacimiento maduro. Dispersión del campo de 2,9 mm/año tras corregir ambigüedades.</span></div>
+      <div class="site"><span class="n">Puerto Madryn · Chubut</span><span class="m">86 fechas · dos franjas fusionadas</span><span class="d">Un parque que cae entre dos ráfagas de radar: se miden por separado y se concilian en la banda de solape.</span></div>
+      <div class="site"><span class="n">Pomona · Río Negro</span><span class="m">85 fechas</span><span class="d">Las dos franjas discrepan en el solape; el informe lo dice arriba de todo en vez de promediarlo. Pendiente de re-medición.</span></div>
+      <div class="site"><span class="n">Barridos · Argentina y España</span><span class="m">357 + 3.810 aerogeneradores</span><span class="d">Once parques argentinos y catorce españoles procesados en lote como prueba de escala del pipeline.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= EQUIPO -->
+<section class="block" id="equipo">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="eyebrow">Quiénes somos</span>
+      <h2 class="h2">Tres personas, y una intersección poco poblada.</h2>
+      <p class="lede">Las plataformas geoespaciales saben de datos pero tratan el terreno como una capa más. Las consultoras saben de física pero no explotan el archivo satelital. El trabajo está en el medio.</p>
+    </div>
+    <div class="people">
+      <div class="person reveal">
+        <span class="role">Ingeniería y modelos</span>
+        <h3>Gino Moretta</h3>
+        <p>Ingeniero aeroespacial. Investigación en aprendizaje automático con física incorporada en la Universidad Sapienza de Roma, con beca del Ministerio de Asuntos Exteriores de Italia. Formación en procesamiento de radar de apertura sintética e imágenes hiperespectrales, con beca de la Agencia Espacial Italiana.</p>
+      </div>
+      <div class="person reveal">
+        <span class="role">Software y producto</span>
+        <h3>Ingeniería de sistemas</h3>
+        <p>Responsable de que un método que funciona en un cuaderno de investigación funcione también en manos de alguien que no lo escribió, todos los días.</p>
+      </div>
+      <div class="person reveal">
+        <span class="role">Diseño y operación</span>
+        <h3>Producto y gestión</h3>
+        <p>Experiencia de uso y coordinación. En una herramienta técnica, la diferencia entre que se adopte o se abandone casi nunca es técnica.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================= CONTACTO -->
+<section class="block" id="contacto">
+  <div class="wrap">
+    <div class="close reveal">
+      <div>
+        <h2>Empezá con un sitio que ya conozcas bien.</h2>
+        <p style="margin-top: 1rem;">Mandanos las coordenadas de un emplazamiento del que sepas la respuesta —uno que te haya dado problemas, o uno que sepas sano— y te devolvemos el informe. Es la única forma honesta de que evalúes si el método sirve: te contamos algo que ya podés verificar.</p>
+      </div>
+      <div style="display: grid; gap: 0.9rem;">
+        <!-- Cambiá acá la dirección de contacto cuando exista una del dominio de Motus. -->
+        <a class="btn btn-primary" href="mailto:morettaginoluciano@gmail.com?subject=Motus%20%C2%B7%20un%20sitio%20para%20medir">Escribirnos</a>
+        <span class="mail">morettaginoluciano@gmail.com</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <span class="brand">MOTUS</span> · Earth in motion · Vigilancia satelital de estabilidad del terreno<br>
+      Datos Copernicus Sentinel-1 (ESA) · procesamiento ASF HyP3 · posiciones © colaboradores de OpenStreetMap (ODbL)
+    </div>
+    <div>Roma · Córdoba · Patagonia</div>
+  </div>
+</footer>
+
+<script src="datos/sauzal.js"></script>
+<script>
+(function () {
+  "use strict";
+  var raiz = document.documentElement;
+  var reducido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------------------------------------------- tema */
+  var boton = document.getElementById("theme"), etiqueta = document.getElementById("theme-label");
+  function leerTema() { try { return localStorage.getItem("motus-tema") || ""; } catch (e) { return ""; } }
+  function aplicarTema(t) {
+    if (t) raiz.setAttribute("data-theme", t); else raiz.removeAttribute("data-theme");
+    etiqueta.textContent = "Tema: " + (t === "dark" ? "oscuro" : t === "light" ? "claro" : "sistema");
+    try { if (t) localStorage.setItem("motus-tema", t); else localStorage.removeItem("motus-tema"); } catch (e) {}
+  }
+  // ?tema=dark|light fija el tema desde la URL (útil para compartir y para capturas)
+  var params = new URLSearchParams(location.search);
+  // ?estatico=ALTO fija la altura del hero en píxeles: permite capturar la página
+  // entera en una ventana alta sin que el hero se estire para llenarla.
+  if (params.has("estatico")) {
+    var altoHero = parseInt(params.get("estatico"), 10);
+    if (altoHero > 0) { var h = document.querySelector(".hero"); h.style.minHeight = altoHero + "px"; h.style.height = altoHero + "px"; }
+  }
+  var temaUrl = params.get("tema");
+  aplicarTema(temaUrl === "dark" || temaUrl === "light" ? temaUrl : leerTema());
+  boton.addEventListener("click", function () {
+    var actual = raiz.getAttribute("data-theme") || "";
+    aplicarTema(actual === "" ? "light" : actual === "light" ? "dark" : "");
+  });
+
+  /* ---------------------------------------------- tokens de color desde CSS */
+  function tokens() {
+    var cs = getComputedStyle(raiz);
+    function v(n) { return cs.getPropertyValue(n).trim(); }
+    return { ground: v("--ground"), surface: v("--surface"), ink: v("--ink"), ink2: v("--ink-2"), ink3: v("--ink-3"),
+             line: v("--line"), accent: v("--accent"), sink: v("--sink"), sink2: v("--sink-2"), lift: v("--lift"), still: v("--still") };
+  }
+  function hexRgb(h) {
+    h = h.replace("#", ""); if (h.length === 3) h = h.split("").map(function (c) { return c + c; }).join("");
+    return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+  }
+  function mezcla(a, b, t) { return [Math.round(a[0] + (b[0] - a[0]) * t), Math.round(a[1] + (b[1] - a[1]) * t), Math.round(a[2] + (b[2] - a[2]) * t)]; }
+  function rgba(c, a) { return "rgba(" + c[0] + "," + c[1] + "," + c[2] + "," + a + ")"; }
+
+  /* Escala divergente: hundimiento → sink, estable → still, levantamiento → lift.
+     El tramo central (|x| < 0.18) casi no se colorea: el ruido no debe parecer señal. */
+  function colorDivergente(x, tk) {
+    var still = hexRgb(tk.still), sink = hexRgb(tk.sink), lift = hexRgb(tk.lift);
+    var a = Math.min(1, Math.abs(x));
+    if (a < 0.18) return rgba(still, 0.35 + a * 1.2);
+    var t = (a - 0.18) / 0.82;
+    return rgba(mezcla(still, x < 0 ? sink : lift, Math.pow(t, 0.8)), 0.55 + 0.45 * t);
+  }
+
+  var D = window.MOTUS_SAUZAL || null;
+  var puntos = null;   // proyección normalizada: x,y en [0,1] con aspecto real
+  if (D && D.lat && D.lon && D.v && D.lat.length === D.v.length) {
+    var lat0 = (D.bbox[0] + D.bbox[2]) / 2, cosl = Math.cos(lat0 * Math.PI / 180);
+    var w = (D.bbox[3] - D.bbox[1]) * cosl, h = (D.bbox[2] - D.bbox[0]);
+    puntos = { n: D.lat.length, x: new Float32Array(D.lat.length), y: new Float32Array(D.lat.length), v: D.v, aspecto: w / h,
+               celdaFrac: (0.128 / 111.32) / h };
+    for (var i = 0; i < D.lat.length; i++) {
+      puntos.x[i] = ((D.lon[i] - D.bbox[1]) * cosl) / w;
+      puntos.y[i] = 1 - (D.lat[i] - D.bbox[0]) / h;
+    }
+    puntos.proyectar = function (lat, lon) { return { x: ((lon - D.bbox[1]) * cosl) / w, y: 1 - (lat - D.bbox[0]) / h }; };
+  }
+
+  /* Agrupa los puntos en cajones de velocidad: por frame se cambia fillStyle
+     ~40 veces en lugar de 37 mil. */
+  var cajones = null;
+  function armarCajones() {
+    if (!puntos) return;
+    var N = 41, min = -10, max = 10, paso = (max - min) / (N - 1);
+    cajones = [];
+    for (var b = 0; b < N; b++) cajones.push({ v: min + b * paso, idx: [] });
+    for (var i = 0; i < puntos.n; i++) {
+      var b = Math.round((Math.max(min, Math.min(max, puntos.v[i])) - min) / paso);
+      cajones[b].idx.push(i);
+    }
+  }
+  armarCajones();
+
+  /* ---------------------------------------------- hero: el terreno se deforma en el tiempo */
+  var heroCanvas = document.getElementById("campo"), heroCtx = heroCanvas.getContext("2d");
+  var tickFecha = document.getElementById("tick-fecha"), tickMm = document.getElementById("tick-mm");
+  var serieFortin = D && D.series && D.series.fortin ? D.series.fortin : null;
+  var anios = 5.64, layout = null;
+
+  function medirHero() {
+    var dpr = Math.min(1.5, window.devicePixelRatio || 1);
+    var W = heroCanvas.clientWidth, H = heroCanvas.clientHeight;
+    heroCanvas.width = Math.round(W * dpr); heroCanvas.height = Math.round(H * dpr);
+    heroCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    // el campo se encuadra cubriendo el viewport (como una foto), centrado
+    if (puntos) {
+      var esc = Math.max(W / puntos.aspecto, H) * 1.12;
+      var cw = esc * puntos.aspecto, ch = esc;
+      layout = { W: W, H: H, ox: (W - cw) / 2, oy: (H - ch) / 2 - H * 0.04, cw: cw, ch: ch, s: Math.max(1.6, ch * puntos.celdaFrac * 0.95) };
+    }
+  }
+
+  /* Pintar 37 mil celdas por cuadro satura el hilo principal. En cambio se
+     pintan 24 cuadros clave (a media resolución, fuera de pantalla, una sola
+     vez por tamaño y tema) y cada cuadro real mezcla los dos más cercanos. */
+  var KF = 24, cache = [], cacheFirma = "";
+  function pintarCampo(ctx, tAnios, tk) {
+    // desplazamiento acumulado ≈ velocidad × tiempo (ajuste lineal). Escala ±40 mm.
+    for (var b = 0; b < cajones.length; b++) {
+      var c = cajones[b]; if (!c.idx.length) continue;
+      ctx.fillStyle = colorDivergente(c.v * tAnios / 40, tk);
+      var idx = c.idx, s = layout.s;
+      for (var k = 0; k < idx.length; k++) {
+        var i = idx[k];
+        ctx.fillRect(layout.ox + puntos.x[i] * layout.cw - s / 2, layout.oy + puntos.y[i] * layout.ch - s / 2, s, s);
+      }
+    }
+  }
+  function cuadroClave(k, tk) {
+    var firma = tk.ground + tk.sink + tk.lift + tk.still + layout.W + "x" + layout.H;
+    if (firma !== cacheFirma) { cache = []; cacheFirma = firma; }
+    if (cache[k]) return cache[k];
+    var off = document.createElement("canvas");
+    off.width = Math.max(1, Math.round(layout.W / 2)); off.height = Math.max(1, Math.round(layout.H / 2));
+    var c = off.getContext("2d");
+    c.scale(0.5, 0.5);
+    c.fillStyle = tk.ground; c.fillRect(0, 0, layout.W, layout.H);
+    pintarCampo(c, k / (KF - 1) * anios, tk);
+    cache[k] = off;
+    return off;
+  }
+  function dibujarHero(tAnios) {
+    var tk = tokens();
+    var W = layout ? layout.W : heroCanvas.clientWidth, H = layout ? layout.H : heroCanvas.clientHeight;
+    heroCtx.fillStyle = tk.ground;
+    heroCtx.fillRect(0, 0, W, H);
+    if (!puntos || !layout) return;
+    var u = Math.max(0, Math.min(1, tAnios / anios)) * (KF - 1);
+    var k0 = Math.floor(u), k1 = Math.min(KF - 1, k0 + 1), f = u - k0;
+    heroCtx.imageSmoothingEnabled = true;
+    heroCtx.globalAlpha = 1;
+    heroCtx.drawImage(cuadroClave(k0, tk), 0, 0, W, H);
+    if (f > 0.01 && k1 !== k0) {
+      heroCtx.globalAlpha = f;
+      heroCtx.drawImage(cuadroClave(k1, tk), 0, 0, W, H);
+      heroCtx.globalAlpha = 1;
+    }
+  }
+
+  function fechaDe(tAnios) {
+    var d0 = new Date(2021, 0, 2);
+    var d = new Date(d0.getTime() + tAnios * 365.25 * 86400000);
+    var meses = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+    return meses[d.getMonth()] + " " + d.getFullYear();
+  }
+  function mmDe(tAnios) {
+    if (!serieFortin) return null;
+    var f = serieFortin.fechas, m = serieFortin.mediana_mm, t0 = new Date(f[0]).getTime();
+    var objetivo = t0 + tAnios * 365.25 * 86400000;
+    for (var i = 1; i < f.length; i++) {
+      var ti = new Date(f[i]).getTime();
+      if (ti >= objetivo) {
+        var tp = new Date(f[i - 1]).getTime(), u = (objetivo - tp) / (ti - tp);
+        return m[i - 1] + (m[i] - m[i - 1]) * u;
+      }
+    }
+    return m[m.length - 1];
+  }
+
+  var inicio = null, DUR = 14000, PAUSA = 2600, corriendo = false, ultimo = 0;
+  function frame(ts) {
+    if (!corriendo) return;
+    if (inicio === null) inicio = ts;
+    // 30 cuadros por segundo alcanzan para un movimiento de años
+    if (ts - ultimo < 33) { requestAnimationFrame(frame); return; }
+    ultimo = ts;
+    var e = (ts - inicio) % (DUR + PAUSA);
+    var u = Math.min(1, e / DUR);
+    var suave = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+    var t = suave * anios;
+    dibujarHero(t);
+    tickFecha.textContent = fechaDe(t);
+    var mm = mmDe(t);
+    if (mm !== null) tickMm.textContent = (mm > -0.05 ? "" : "−") + Math.abs(mm).toFixed(0) + " mm";
+    requestAnimationFrame(frame);
+  }
+  // ?t=años congela el hero en ese instante (0 a 5,64): para capturas y para impresión
+  var tFijo = params.has("t") ? Math.max(0, Math.min(anios, parseFloat(params.get("t")) || 0)) : null;
+  function arrancarHero() {
+    medirHero();
+    if (tFijo !== null) {
+      dibujarHero(tFijo); tickFecha.textContent = fechaDe(tFijo);
+      var mmT = mmDe(tFijo); if (mmT !== null) tickMm.textContent = (mmT > -0.05 ? "" : "−") + Math.abs(mmT).toFixed(0) + " mm";
+      return;
+    }
+    if (reducido || !puntos) {
+      dibujarHero(anios);
+      tickFecha.textContent = "2021 → 2026";
+      var mmF = mmDe(anios); if (mmF !== null) tickMm.textContent = "−" + Math.abs(mmF).toFixed(0) + " mm";
+      return;
+    }
+    if (!corriendo) { corriendo = true; requestAnimationFrame(frame); }
+  }
+  // pausar cuando el hero no se ve: 37 mil rectángulos por frame no se regalan
+  var heroSec = heroCanvas.parentElement;
+  if ("IntersectionObserver" in window && !reducido && tFijo === null) {
+    new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        if (en.isIntersecting) { if (!corriendo && puntos) { corriendo = true; inicio = null; requestAnimationFrame(frame); } }
+        else corriendo = false;
+      });
+    }, { threshold: 0.05 }).observe(heroSec);
+  }
+
+  /* el nombre se contrae hacia el centro al bajar */
+  var palabra = document.getElementById("hero-word");
+  function scrollHero() {
+    if (reducido) return;
+    var p = Math.min(1, Math.max(0, window.scrollY / (window.innerHeight * 0.9)));
+    palabra.style.transform = "scale(" + (1 - 0.42 * p) + ") translateY(" + (p * 28) + "px)";
+    palabra.style.opacity = String(1 - p * 1.15);
+  }
+  window.addEventListener("scroll", scrollHero, { passive: true });
+
+  /* ---------------------------------------------- mapa estático del caso */
+  var mapa = document.getElementById("mapa"), mctx = mapa.getContext("2d");
+  function dibujarMapa() {
+    var tk = tokens();
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    var W = mapa.clientWidth || 960, H = Math.round(W * 0.75);
+    mapa.width = Math.round(W * dpr); mapa.height = Math.round(H * dpr);
+    mapa.style.height = H + "px";
+    mctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    mctx.fillStyle = tk.surface; mctx.fillRect(0, 0, W, H);
+    if (!puntos) {
+      mctx.fillStyle = tk.ink2; mctx.font = "14px " + getComputedStyle(raiz).getPropertyValue("--body");
+      mctx.fillText("Los datos del campo no se cargaron (datos/sauzal.js).", 20, 30);
+      return;
+    }
+    var pad = 18, esc = Math.min((W - 2 * pad) / puntos.aspecto, H - 2 * pad);
+    var cw = esc * puntos.aspecto, ch = esc, ox = (W - cw) / 2, oy = (H - ch) / 2;
+    var s = Math.max(1.4, ch * puntos.celdaFrac * 1.02);
+    for (var b = 0; b < cajones.length; b++) {
+      var c = cajones[b]; if (!c.idx.length) continue;
+      mctx.fillStyle = colorDivergente(c.v / 8, tk);
+      for (var k = 0; k < c.idx.length; k++) {
+        var i = c.idx[k];
+        mctx.fillRect(ox + puntos.x[i] * cw - s / 2, oy + puntos.y[i] * ch - s / 2, s, s);
+      }
+    }
+    // marcas
+    var fam = getComputedStyle(raiz).getPropertyValue("--mono");
+    mctx.font = "12px " + fam; mctx.textBaseline = "middle";
+    (D.marcas || []).forEach(function (m) {
+      var p = puntos.proyectar(m.lat, m.lon), x = ox + p.x * cw, y = oy + p.y * ch;
+      var r = m.tipo === "cuenco" ? 20 : 7;
+      mctx.beginPath(); mctx.arc(x, y, r, 0, Math.PI * 2);
+      mctx.strokeStyle = m.tipo === "cuenco" ? tk.ink : tk.accent; mctx.lineWidth = m.tipo === "cuenco" ? 1.5 : 2;
+      if (m.tipo !== "cuenco") { mctx.fillStyle = tk.accent; mctx.fill(); }
+      mctx.stroke();
+      var etiqueta = m.nombre;
+      var tw = mctx.measureText(etiqueta).width, lx = x + r + 8, ly = y;
+      if (lx + tw + 10 > W) { lx = x - r - 8 - tw - 10; }
+      mctx.fillStyle = rgba(hexRgb(tk.surface), 0.85); mctx.fillRect(lx - 5, ly - 10, tw + 10, 20);
+      mctx.fillStyle = tk.ink; mctx.fillText(etiqueta, lx, ly);
+    });
+    // barra de escala: 5 km
+    var kmPx = cw / ((D.bbox[3] - D.bbox[1]) * Math.cos((D.bbox[0] + D.bbox[2]) / 2 * Math.PI / 180) * 111.32);
+    var bx = ox + 14, by = oy + ch - 18;
+    mctx.strokeStyle = tk.ink; mctx.lineWidth = 2;
+    mctx.beginPath(); mctx.moveTo(bx, by); mctx.lineTo(bx + 5 * kmPx, by); mctx.stroke();
+    mctx.fillStyle = tk.ink2; mctx.fillText("5 km", bx, by - 12);
+    // norte
+    mctx.fillText("N ↑", ox + cw - 34, oy + 16);
+  }
+
+  /* ---------------------------------------------- serie temporal (SVG) */
+  function dibujarSerie() {
+    var cont = document.getElementById("serie");
+    if (!D || !D.series || !D.series.fortin || !D.series.pueblo) { cont.innerHTML = '<p style="padding:1rem 1.25rem" class="fine">Sin datos de series.</p>'; return; }
+    var tk = tokens();
+    var W = 960, H = 300, ml = 52, mr = 18, mt = 18, mb = 34;
+    var f = D.series.fortin, p = D.series.pueblo;
+    var t0 = new Date(f.fechas[0]).getTime(), t1 = new Date(f.fechas[f.fechas.length - 1]).getTime();
+    var todos = f.mediana_mm.concat(p.mediana_mm);
+    var ymin = Math.floor(Math.min.apply(null, todos) / 10) * 10 - 5, ymax = Math.ceil(Math.max.apply(null, todos) / 10) * 10 + 5;
+    function X(iso) { return ml + (new Date(iso).getTime() - t0) / (t1 - t0) * (W - ml - mr); }
+    function Y(v) { return mt + (ymax - v) / (ymax - ymin) * (H - mt - mb); }
+    function camino(s) { return s.fechas.map(function (d, i) { return (i ? "L" : "M") + X(d).toFixed(1) + " " + Y(s.mediana_mm[i]).toFixed(1); }).join(" "); }
+    var g = "";
+    for (var y = ymin + 5; y < ymax; y += 10) {
+      g += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + Y(y).toFixed(1) + '" y2="' + Y(y).toFixed(1) + '" stroke="' + tk.line + '" stroke-width="1"/>';
+      g += '<text x="' + (ml - 8) + '" y="' + Y(y).toFixed(1) + '" text-anchor="end" dominant-baseline="middle" font-size="11" font-family="' + tk.mono + '" fill="' + tk.ink3 + '">' + (y > 0 ? "+" : y < 0 ? "−" : "") + Math.abs(y) + '</text>';
+    }
+    for (var a = 2021; a <= 2026; a++) {
+      var xa = X(a + "-01-01");
+      g += '<line x1="' + xa.toFixed(1) + '" x2="' + xa.toFixed(1) + '" y1="' + mt + '" y2="' + (H - mb) + '" stroke="' + tk.line + '" stroke-width="1" stroke-dasharray="2 4"/>';
+      g += '<text x="' + xa.toFixed(1) + '" y="' + (H - 12) + '" text-anchor="middle" font-size="11" font-family="' + tk.mono + '" fill="' + tk.ink3 + '">' + a + '</text>';
+    }
+    var cero = Y(0).toFixed(1);
+    g += '<line x1="' + ml + '" x2="' + (W - mr) + '" y1="' + cero + '" y2="' + cero + '" stroke="' + tk.ink3 + '" stroke-width="1"/>';
+    g += '<path d="' + camino(p) + '" fill="none" stroke="' + tk.ink3 + '" stroke-width="2" stroke-linejoin="round"/>';
+    var area = camino(f) + " L" + X(f.fechas[f.fechas.length - 1]).toFixed(1) + " " + cero + " L" + X(f.fechas[0]).toFixed(1) + " " + cero + " Z";
+    g += '<path d="' + area + '" fill="' + tk.sink + '" fill-opacity="0.12"/>';
+    g += '<path d="' + camino(f) + '" fill="none" stroke="' + tk.sink + '" stroke-width="2.5" stroke-linejoin="round"/>';
+    var ult = f.mediana_mm[f.mediana_mm.length - 1];
+    var xe = X(f.fechas[f.fechas.length - 1]), ye = Y(ult);
+    g += '<circle cx="' + xe.toFixed(1) + '" cy="' + ye.toFixed(1) + '" r="4" fill="' + tk.sink + '"/>';
+    g += '<text x="' + (xe - 8).toFixed(1) + '" y="' + (ye + 16).toFixed(1) + '" text-anchor="end" font-size="12" font-family="' + tk.mono + '" fill="' + tk.sink + '">−' + Math.abs(ult).toFixed(0) + ' mm</text>';
+    cont.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Serie temporal: el cuenco de Fortín de Piedra acumula ' + Math.abs(ult).toFixed(0) + ' mm de hundimiento entre 2021 y 2026; el pueblo se mantiene estable">' + g + '</svg>';
+  }
+  tokens = (function (orig) { return function () { var t = orig(); t.mono = getComputedStyle(raiz).getPropertyValue("--mono").trim(); return t; }; })(tokens);
+
+  /* ---------------------------------------------- reveal */
+  var reveals = document.querySelectorAll(".reveal");
+  // ?estatico=1 muestra todo de entrada (impresión, capturas, lectores sin scroll)
+  if (reducido || params.has("estatico") || !("IntersectionObserver" in window)) {
+    reveals.forEach(function (el) { el.classList.add("in"); });
+  } else {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+    reveals.forEach(function (el) { io.observe(el); });
+  }
+
+  /* ---------------------------------------------- arranque y redibujo */
+  function todo() { arrancarHero(); dibujarMapa(); dibujarSerie(); scrollHero(); }
+  var espera;
+  window.addEventListener("resize", function () { clearTimeout(espera); espera = setTimeout(function () { medirHero(); if (reducido || !puntos) dibujarHero(anios); dibujarMapa(); dibujarSerie(); }, 120); });
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () { if (reducido || !puntos) dibujarHero(anios); dibujarMapa(); dibujarSerie(); });
+  new MutationObserver(function () { if (reducido || !puntos) dibujarHero(anios); dibujarMapa(); dibujarSerie(); }).observe(raiz, { attributes: true, attributeFilter: ["data-theme"] });
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(function () { dibujarMapa(); dibujarSerie(); }); }
+  todo();
+  // ?ir=id salta a una sección sin animación de scroll (capturas, enlaces de impresión)
+  if (params.get("ir")) {
+    var destino = document.getElementById(params.get("ir"));
+    if (destino) { raiz.style.scrollBehavior = "auto"; window.scrollTo(0, Math.max(0, destino.offsetTop - 60)); }
+  }
+  // Gancho de verificación: permite pintar el hero en un instante dado sin esperar la animación.
+  window.motus = { pintar: function (t) { corriendo = false; t = t === undefined ? anios : t; dibujarHero(t); tickFecha.textContent = fechaDe(t); var mm = mmDe(t); if (mm !== null) tickMm.textContent = "−" + Math.abs(mm).toFixed(0) + " mm"; }, redibujar: function () { dibujarMapa(); dibujarSerie(); } };
+})();
+</script>
+</body>
+</html>
