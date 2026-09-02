@@ -815,7 +815,7 @@
       var etiqueta = m.nombre;
       var tw = mctx.measureText(etiqueta).width, lx = x + r + 8, ly = y;
       if (lx + tw + 10 > W) { lx = x - r - 8 - tw - 10; }
-      if (lx < 6) { lx = Math.max(6, Math.min(W - tw - 12, x - tw / 2)); ly = y + r + 14; }   // no entra a los lados: abajo, centrada
+      if (lx < 6) { lx = Math.max(6, Math.min(W - tw - 12, x - tw / 2)); ly = y - r - 14; }   // no entra a los lados: arriba, centrada (abajo esta el pueblo)
       mctx.fillStyle = rgba(hexRgb(tk.surface), 0.85); mctx.fillRect(lx - 5, ly - 10, tw + 10, 20);
       mctx.fillStyle = tk.ink; mctx.fillText(etiqueta, lx, ly);
     });
