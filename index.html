@@ -247,6 +247,7 @@
   .kpi { background: var(--raised); border-radius: 18px; padding: 1.1rem 1.2rem; display: grid; gap: 0.25rem; }
   .kpi .v { font-family: var(--display); font-weight: 300; font-size: clamp(1.8rem, 3vw, 2.4rem); line-height: 1; font-variant-numeric: tabular-nums; }
   .kpi .v.sink { color: var(--sink); }
+  .kpi .v.lift { color: var(--lift); }
   .kpi .k { font-size: 0.85rem; color: var(--ink-2); }
   .kpi .s { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-3); }
 
@@ -256,6 +257,9 @@
   th { font-family: var(--mono); font-weight: 500; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
   tr:last-child td { border-bottom: 0; }
   td.num { white-space: nowrap; }
+  table.compacta { min-width: 0; }
+  table.compacta th + th, table.compacta td + td { text-align: right; }
+  table.compacta td:first-child { padding-right: 0.5rem; }
 
   .steps { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0.75rem; counter-reset: paso; }
   .step { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 1.1rem 1.1rem 1.2rem; display: grid; gap: 0.5rem; align-content: start; position: relative; }
@@ -395,8 +399,8 @@
   <div class="wrap">
     <div class="head reveal">
       <span class="eyebrow">Caso · Sauzal Bonito, Neuquén</span>
-      <h2 class="h2">Extendimos cinco años un estudio publicado. Los cuencos siguen ahí.</h2>
-      <p class="lede">En 2022, un equipo del CONICET publicó en <em>Scientific Reports</em> dos cuencos de hundimiento cerca de Sauzal Bonito, medidos entre 2017 y 2020. Desde entonces la actividad en Vaca Muerta se multiplicó y nadie volvió a medir. Nosotros procesamos 2021–2026 con nuestro propio pipeline.</p>
+      <h2 class="h2">Extendimos cinco años un estudio publicado. El hundimiento se mudó.</h2>
+      <p class="lede">En 2022, un equipo del CONICET publicó en <em>Scientific Reports</em> dos zonas de hundimiento cerca de Sauzal Bonito, medidas entre 2017 y 2020. Desde entonces la actividad en Vaca Muerta se multiplicó y nadie volvió a medir. Procesamos las dos órbitas de Sentinel-1 desde 2015: la zona de entonces se está apagando, y donde hoy se hunde el terreno no se hundía nada.</p>
     </div>
 
     <div class="grid-2">
@@ -407,17 +411,18 @@
           <span><span class="dot" style="background: var(--sink)"></span>se hunde</span>
           <span><span class="dot" style="background: var(--still)"></span>estable</span>
           <span><span class="dot" style="background: var(--lift)"></span>se levanta</span>
+          <span>trazos: la zona que se hundía en 2017–2020</span>
           <span>escala ±8 mm/año en línea de visada</span>
         </div>
       </div>
       <div style="display: grid; gap: 1rem;">
         <div class="kpis reveal">
-          <div class="kpi"><span class="v sink num">−6,7</span><span class="k">mm/año en el cuenco de Fortín de Piedra</span><span class="s">agregado a 150 m · nivel «moderado»</span></div>
+          <div class="kpi"><span class="v sink num">×2</span><span class="k">se duplicó la tasa del cuenco de Fortín de Piedra</span><span class="s">de −3,5 a −7,1 mm/año entre 2021–2023 y los últimos tres años</span></div>
           <div class="kpi"><span class="v sink num">−9,5</span><span class="k">mm/año, pico del cuenco NE</span><span class="s">a 10,7 km del pueblo · sin atribuir</span></div>
           <div class="kpi"><span class="v num">37.276</span><span class="k">puntos de medición a 128 m</span><span class="s">95 % de celdas resueltas · coherencia 0,99</span></div>
-          <div class="kpi"><span class="v num">37<span style="font-size: 0.55em; color: var(--ink-3);">/100</span></span><span class="k">interferogramas corregidos antes de invertir</span><span class="s">saltos de ciclo detectados por cierre de fase</span></div>
+          <div class="kpi"><span class="v lift num">+20</span><span class="k">mm de levantamiento el 7 de marzo de 2019</span><span class="s">escalón cosísmico sobre 17 km², visto en las dos órbitas</span></div>
         </div>
-        <p class="fine reveal">El cuenco grande cae sobre pozos <span class="num">TPT.Nq.FP-*</span> operados por Tecpetrol en Fortín de Piedra, a 3,9 km del pueblo, según OpenStreetMap. <strong>El pueblo de Sauzal Bonito está estable.</strong> Medimos deformación; la relación con la actividad es la que estableció el estudio original.</p>
+        <p class="fine reveal">El cuenco grande cae sobre pozos <span class="num">TPT.Nq.FP-*</span> operados por Tecpetrol en Fortín de Piedra, a 3,9 km del pueblo, según OpenStreetMap; entre 2017 y 2020 ese terreno estaba quieto. El círculo de trazos marca la zona que se hundía entonces, hoy a la mitad de su tasa. <strong>El pueblo de Sauzal Bonito está estable.</strong> Medimos deformación; la relación con la actividad es la que estableció el estudio original.</p>
       </div>
     </div>
 
@@ -432,21 +437,24 @@
     </div>
 
     <div class="grid-2" style="margin-top: 1.5rem;">
-      <div class="tablewrap reveal">
-        <table>
-          <thead><tr><th>Contra el estudio publicado</th><th>Tamburini-Beliveau et al., 2022</th><th>Motus, 2026</th></tr></thead>
+      <div class="reveal" style="display: grid; gap: 0.9rem; align-content: start;">
+      <div class="tablewrap">
+        <table class="compacta">
+          <thead><tr><th>Vertical, mm/año</th><th>2017 – 2020</th><th>2021 – 2026</th></tr></thead>
           <tbody>
-            <tr><td>Período</td><td class="num">2017 – 2020</td><td class="num">2021 – 2026</td></tr>
-            <tr><td>Cuencos</td><td>2, de ~2,3 km de radio</td><td>2, de 3,8 y 1,8 km de diámetro equivalente</td></tr>
-            <tr><td>Velocidad</td><td class="num">−8,4 a −9,6 mm/año promedio</td><td class="num">mediana −5,1 y −5,4 · picos −7,4 y −9,5</td></tr>
-            <tr><td>Datos</td><td>Sentinel-1, ascendente y descendente</td><td>Sentinel-1, ascendente, 41 de 216 fechas</td></tr>
-            <tr><td>Costo de procesamiento</td><td>—</td><td class="num">100 créditos de 8.000 gratuitos por mes</td></tr>
+            <tr><td>Zona de 2017–2020</td><td class="num">−8,5</td><td class="num">−4,5</td></tr>
+            <tr><td>Cuenco NE</td><td class="num">−4,2</td><td class="num">−9,0</td></tr>
+            <tr><td>Cuenco Fortín de Piedra</td><td class="num">−0,9</td><td class="num">−10,2</td></tr>
+            <tr><td>El pueblo</td><td class="num">+0,4</td><td class="num">+0,2</td></tr>
           </tbody>
         </table>
       </div>
+        <p class="fine">Mediana a 400 m del centro de cada zona, relativa al terreno de referencia. 2017–2020 se resuelve con las dos órbitas; 2021–2026, con la ascendente y el supuesto de movimiento vertical.</p>
+      </div>
       <div class="reveal" style="display: grid; gap: 0.9rem;">
-        <p class="fine"><strong>Qué significa.</strong> Cinco años después del fin de la serie publicada, la subsidencia sigue activa, al mismo orden de magnitud. Las velocidades verticales aproximadas son las de línea de visada divididas por 0,784 (incidencia de 38,4°, leída del producto).</p>
-        <p class="fine"><strong>Qué no significa.</strong> Con una sola geometría de visada no separamos el movimiento vertical del este-oeste, y somos ciegos al norte-sur. Los cuencos son compatibles con las zonas del estudio original; sus coordenadas exactas no fueron publicadas.</p>
+        <p class="fine"><strong>Reproducimos el estudio antes de extenderlo.</strong> Sobre sus mismas fechas, 2017–2020, medimos la zona publicada 7 km al norte del pueblo: 27 km², −8,0 mm/año en línea de visada contra los −9,6 informados, y 34 mm verticales acumulados contra 33,0. Ese acuerdo es lo que da derecho a creerle a lo que sigue.</p>
+        <p class="fine"><strong>Qué significa.</strong> El terreno que se hunde hoy no es el que se hundía entonces. La zona de 2017–2020 va apagándose; el cuenco de Fortín de Piedra apareció después y duplicó su tasa en cinco años. Un estudio de una sola ventana no habría visto el cambio: hace falta medir de forma continua.</p>
+        <p class="fine"><strong>Qué no significa.</strong> Toda velocidad es relativa al terreno de referencia, no absoluta. Entre 2015 y 2021 las dos órbitas confirman que el movimiento es vertical, sin componente este-oeste; después de 2021 el archivo descendente tiene un hueco de tres años y siete meses y esa verificación no puede repetirse. Medimos deformación, no causas.</p>
         <p class="fine">Fuente: Tamburini-Beliveau et al., <em>Assessment of ground deformation and seismicity in two areas of intense hydrocarbon production in the Argentinian Patagonia</em>, Scientific Reports 12:17968 (2022).</p>
       </div>
     </div>
@@ -502,7 +510,7 @@
       <div class="stat"><span class="v num">2021</span><span class="k">desde cuándo reconstruimos cada sitio, sin instalar nada</span></div>
     </div>
     <div class="sites reveal" style="margin-top: 2.5rem;">
-      <div class="site"><span class="n">Sauzal Bonito · Neuquén</span><span class="m">41 fechas · 37.276 puntos</span><span class="d">Extensión 2021–2026 de un estudio publicado. Dos cuencos activos; el pueblo estable.</span></div>
+      <div class="site"><span class="n">Sauzal Bonito · Neuquén</span><span class="m">41 fechas · 37.276 puntos</span><span class="d">Extensión 2021–2026 de un estudio publicado. El hundimiento cambió de lugar; el pueblo estable.</span></div>
       <div class="site"><span class="n">Comodoro Rivadavia · Chubut</span><span class="m">41 fechas · cobertura 97 %</span><span class="d">Parque eólico sobre un yacimiento maduro. Dispersión del campo de 2,9 mm/año tras corregir ambigüedades.</span></div>
       <div class="site"><span class="n">Puerto Madryn · Chubut</span><span class="m">86 fechas · dos franjas fusionadas</span><span class="d">Un parque que cae entre dos ráfagas de radar: se miden por separado y se concilian en la banda de solape.</span></div>
       <div class="site"><span class="n">Pomona · Río Negro</span><span class="m">85 fechas</span><span class="d">Las dos franjas discrepan en el solape; el informe lo dice arriba de todo en vez de promediarlo. Pendiente de re-medición.</span></div>
@@ -822,11 +830,15 @@
     mctx.font = "12px " + fam; mctx.textBaseline = "middle";
     (D.marcas || []).forEach(function (m) {
       var p = puntos.proyectar(m.lat, m.lon), x = ox + p.x * cw, y = oy + p.y * ch;
-      var r = m.tipo === "cuenco" ? 20 : 7;
+      var circulo = m.tipo === "cuenco" || m.tipo === "historica";
+      var r = m.tipo === "cuenco" ? 20 : (m.tipo === "historica" ? 30 : 7);
+      mctx.save();
+      if (m.tipo === "historica") { mctx.setLineDash([5, 4]); }
       mctx.beginPath(); mctx.arc(x, y, r, 0, Math.PI * 2);
-      mctx.strokeStyle = m.tipo === "cuenco" ? tk.ink : tk.accent; mctx.lineWidth = m.tipo === "cuenco" ? 1.5 : 2;
-      if (m.tipo !== "cuenco") { mctx.fillStyle = tk.accent; mctx.fill(); }
+      mctx.strokeStyle = circulo ? tk.ink : tk.accent; mctx.lineWidth = circulo ? 1.5 : 2;
+      if (!circulo) { mctx.fillStyle = tk.accent; mctx.fill(); }
       mctx.stroke();
+      mctx.restore();
       var etiqueta = m.nombre;
       var tw = mctx.measureText(etiqueta).width, lx = x + r + 8, ly = y;
       if (lx + tw + 10 > W) { lx = x - r - 8 - tw - 10; }
