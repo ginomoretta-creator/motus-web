@@ -399,8 +399,8 @@
   <div class="wrap">
     <div class="head reveal">
       <span class="eyebrow">Caso · Sauzal Bonito, Neuquén</span>
-      <h2 class="h2">Extendimos cinco años un estudio publicado. El hundimiento se mudó.</h2>
-      <p class="lede">En 2022, un equipo del CONICET publicó en <em>Scientific Reports</em> dos zonas de hundimiento cerca de Sauzal Bonito, medidas entre 2017 y 2020. Desde entonces la actividad en Vaca Muerta se multiplicó y nadie volvió a medir. Procesamos las dos órbitas de Sentinel-1 desde 2015: la zona de entonces se está apagando, y donde hoy se hunde el terreno no se hundía nada.</p>
+      <h2 class="h2">Extendimos cinco años un estudio publicado. El hundimiento se mudó, y era más grande.</h2>
+      <p class="lede">En 2022, un equipo del CONICET publicó en <em>Scientific Reports</em> dos zonas de hundimiento cerca de Sauzal Bonito, medidas entre 2017 y 2020. Desde entonces la actividad en Vaca Muerta se multiplicó y nadie volvió a medir de forma continua. Procesamos las dos órbitas de Sentinel-1 desde 2015 y ampliamos el área hacia el norte: la zona de entonces se está apagando, donde hoy se hunde el terreno antes no se hundía nada, y el mayor de los cuencos quedaba fuera del recuadro original.</p>
     </div>
 
     <div class="grid-2">
@@ -412,25 +412,26 @@
           <span><span class="dot" style="background: var(--still)"></span>estable</span>
           <span><span class="dot" style="background: var(--lift)"></span>se levanta</span>
           <span>trazos: la zona que se hundía en 2017–2020</span>
-          <span>escala ±8 mm/año en línea de visada</span>
+          <span>escala ±12 mm/año · el cuenco norte satura</span>
         </div>
       </div>
       <div style="display: grid; gap: 1rem;">
         <div class="kpis reveal">
           <div class="kpi"><span class="v sink num">×2</span><span class="k">se duplicó la tasa del cuenco de Fortín de Piedra</span><span class="s">de −3,5 a −7,1 mm/año entre 2021–2023 y los últimos tres años</span></div>
-          <div class="kpi"><span class="v sink num">−9,5</span><span class="k">mm/año, pico del cuenco NE</span><span class="s">a 10,7 km del pueblo · sin atribuir</span></div>
-          <div class="kpi"><span class="v num">37.276</span><span class="k">puntos de medición a 128 m</span><span class="s">95 % de celdas resueltas · coherencia 0,99</span></div>
+          <div class="kpi"><span class="v sink num">−16,3</span><span class="k">mm/año en el cuenco norte, el mayor del área</span><span class="s">33 km² bajo −8 mm/año · el único lóbulo que baja de ese umbral</span></div>
+          <div class="kpi"><span class="v num">0,3</span><span class="k">mm/año de acuerdo con una cadena independiente</span><span class="s">los mismos interferogramas invertidos con MintPy</span></div>
           <div class="kpi"><span class="v lift num">+20</span><span class="k">mm de levantamiento el 7 de marzo de 2019</span><span class="s">escalón cosísmico sobre 17 km², visto en las dos órbitas</span></div>
         </div>
-        <p class="fine reveal">El cuenco grande cae sobre pozos <span class="num">TPT.Nq.FP-*</span> operados por Tecpetrol en Fortín de Piedra, a 3,9 km del pueblo, según OpenStreetMap; entre 2017 y 2020 ese terreno estaba quieto. El círculo de trazos marca la zona que se hundía entonces, hoy a la mitad de su tasa. <strong>El pueblo de Sauzal Bonito está estable.</strong> Medimos deformación; la relación con la actividad es la que estableció el estudio original.</p>
+        <p class="fine reveal">Entre 2017 y 2020 el terreno de Fortín de Piedra estaba quieto y hoy baja a −9,4 mm/año: el cuenco es posterior al estudio. El círculo de trazos marca la zona que se hundía entonces, hoy a menos de la mitad de su tasa. Más al norte hay un tercer cuenco, el mayor de todos, que el recuadro original no alcanzaba a ver. <strong>El pueblo de Sauzal Bonito está estable.</strong> Medimos deformación; no atribuimos causas.</p>
       </div>
     </div>
 
     <div class="frame reveal" style="margin-top: 1.5rem;">
-      <div class="frame-head"><span>Desplazamiento acumulado · mediana de 400 m alrededor de cada punto</span><span>41 fechas · ene 2021 → ago 2026</span></div>
+      <div class="frame-head"><span>Desplazamiento acumulado · mediana de 400 m alrededor de cada punto</span><span>ene 2021 → ago 2026 · relativo al campo lejano</span></div>
       <div id="serie"></div>
       <div class="frame-foot">
         <span><span class="dot" style="background: var(--sink)"></span>Cuenco de Fortín de Piedra</span>
+        <span><span class="dot" style="background: var(--sink)"></span>Cuenco norte (trazos)</span>
         <span><span class="dot" style="background: var(--ink-3)"></span>Sauzal Bonito, el pueblo</span>
         <span>mm en línea de visada; negativo = se aleja del satélite</span>
       </div>
@@ -442,10 +443,11 @@
         <table class="compacta">
           <thead><tr><th>Vertical, mm/año</th><th>2017 – 2020</th><th>2021 – 2026</th></tr></thead>
           <tbody>
-            <tr><td>Zona de 2017–2020</td><td class="num">−8,5</td><td class="num">−4,5</td></tr>
-            <tr><td>Cuenco NE</td><td class="num">−4,2</td><td class="num">−9,0</td></tr>
-            <tr><td>Cuenco Fortín de Piedra</td><td class="num">−0,9</td><td class="num">−10,2</td></tr>
-            <tr><td>El pueblo</td><td class="num">+0,4</td><td class="num">+0,2</td></tr>
+            <tr><td>Cuenco norte</td><td class="num">−7,8</td><td class="num">−16,3</td></tr>
+            <tr><td>Zona de 2017–2020</td><td class="num">−8,5</td><td class="num">−3,7</td></tr>
+            <tr><td>Cuenco Fortín de Piedra</td><td class="num">−0,9</td><td class="num">−9,4</td></tr>
+            <tr><td>Cuenco NE</td><td class="num">−4,2</td><td class="num">−8,0</td></tr>
+            <tr><td>El pueblo</td><td class="num">+0,4</td><td class="num">+0,5</td></tr>
           </tbody>
         </table>
       </div>
@@ -453,9 +455,9 @@
       </div>
       <div class="reveal" style="display: grid; gap: 0.9rem;">
         <p class="fine"><strong>Reproducimos el estudio antes de extenderlo.</strong> Sobre sus mismas fechas, 2017–2020, medimos la zona publicada 7 km al norte del pueblo: 27 km², −8,0 mm/año en línea de visada contra los −9,6 informados, y 34 mm verticales acumulados contra 33,0. Ese acuerdo es lo que da derecho a creerle a lo que sigue.</p>
-        <p class="fine"><strong>Qué significa.</strong> El terreno que se hunde hoy no es el que se hundía entonces. La zona de 2017–2020 va apagándose; el cuenco de Fortín de Piedra apareció después y duplicó su tasa en cinco años. Un estudio de una sola ventana no habría visto el cambio: hace falta medir de forma continua.</p>
+        <p class="fine"><strong>Qué significa.</strong> El terreno que se hunde hoy no es el que se hundía entonces. La zona de 2017–2020 va apagándose, el cuenco de Fortín de Piedra apareció después y duplicó su tasa, y el mayor de los tres estaba fuera del recuadro que se venía mirando. Un estudio de una sola ventana, sobre un recuadro fijo, no habría visto ninguna de las tres cosas.</p>
         <p class="fine"><strong>Qué no significa.</strong> Toda velocidad es relativa al terreno de referencia, no absoluta. Entre 2015 y 2021 las dos órbitas confirman que el movimiento es vertical, sin componente este-oeste; después de 2021 el archivo descendente tiene un hueco de tres años y siete meses y esa verificación no puede repetirse. Medimos deformación, no causas.</p>
-        <p class="fine">Fuente: Tamburini-Beliveau et al., <em>Assessment of ground deformation and seismicity in two areas of intense hydrocarbon production in the Argentinian Patagonia</em>, Scientific Reports 12:17968 (2022).</p>
+        <p class="fine"><strong>Verificado por fuera.</strong> Los mismos interferogramas invertidos con MintPy, software independiente y de uso extendido, dan la misma deformación local dentro de 0,3 mm/año. Y el cuenco norte tiene una medición previa independiente: un trabajo final de la Universidad Nacional de Río Negro (2025), con otra red de interferogramas, mide un punto dentro de él con la misma cronología.</p><p class="fine">Fuentes: Tamburini-Beliveau et al., <em>Scientific Reports</em> 12:17968 (2022); Martinez Maliqueo, trabajo final de Licenciatura en Geología, UNRN (2025).</p>
       </div>
     </div>
   </div>
@@ -819,7 +821,7 @@
     var s = Math.max(1.4, ch * puntos.celdaFrac * 1.02);
     for (var b = 0; b < cajones.length; b++) {
       var c = cajones[b]; if (!c.idx.length) continue;
-      mctx.fillStyle = colorDivergente(c.v / 8, tk);
+      mctx.fillStyle = colorDivergente(c.v / 12, tk);
       for (var k = 0; k < c.idx.length; k++) {
         var i = c.idx[k];
         mctx.fillRect(ox + puntos.x[i] * cw - s / 2, oy + puntos.y[i] * ch - s / 2, s, s);
@@ -864,9 +866,9 @@
     // en pantallas angostas el viewBox se achica para que el texto no quede en miniatura
     var angosto = (cont.clientWidth || 960) < 640;
     var W = angosto ? 560 : 960, H = angosto ? 260 : 300, ml = 46, mr = 16, mt = 18, mb = 34;
-    var f = D.series.fortin, p = D.series.pueblo;
+    var f = D.series.fortin, p = D.series.pueblo, nte = D.series.norte || null;
     var t0 = new Date(f.fechas[0]).getTime(), t1 = new Date(f.fechas[f.fechas.length - 1]).getTime();
-    var todos = f.mediana_mm.concat(p.mediana_mm);
+    var todos = f.mediana_mm.concat(p.mediana_mm).concat(nte ? nte.mediana_mm : []);
     var ymin = Math.floor(Math.min.apply(null, todos) / 10) * 10 - 5, ymax = Math.ceil(Math.max.apply(null, todos) / 10) * 10 + 5;
     function X(iso) { return ml + (new Date(iso).getTime() - t0) / (t1 - t0) * (W - ml - mr); }
     function Y(v) { return mt + (ymax - v) / (ymax - ymin) * (H - mt - mb); }
@@ -887,11 +889,18 @@
     var area = camino(f) + " L" + X(f.fechas[f.fechas.length - 1]).toFixed(1) + " " + cero + " L" + X(f.fechas[0]).toFixed(1) + " " + cero + " Z";
     g += '<path d="' + area + '" fill="' + tk.sink + '" fill-opacity="0.12"/>';
     g += '<path d="' + camino(f) + '" fill="none" stroke="' + tk.sink + '" stroke-width="2.5" stroke-linejoin="round"/>';
+    if (nte) { g += '<path d="' + camino(nte) + '" fill="none" stroke="' + tk.sink + '" stroke-width="2.5" stroke-dasharray="6 4" stroke-linejoin="round"/>'; }
     var ult = f.mediana_mm[f.mediana_mm.length - 1];
     var xe = X(f.fechas[f.fechas.length - 1]), ye = Y(ult);
     g += '<circle cx="' + xe.toFixed(1) + '" cy="' + ye.toFixed(1) + '" r="4" fill="' + tk.sink + '"/>';
     g += '<text x="' + (xe - 8).toFixed(1) + '" y="' + (ye + 16).toFixed(1) + '" text-anchor="end" font-size="12" font-family="' + tk.mono + '" fill="' + tk.sink + '">−' + Math.abs(ult).toFixed(0) + ' mm</text>';
-    cont.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Serie temporal: el cuenco de Fortín de Piedra acumula ' + Math.abs(ult).toFixed(0) + ' mm de hundimiento entre 2021 y 2026; el pueblo se mantiene estable">' + g + '</svg>';
+    if (nte) {
+      var un = nte.mediana_mm[nte.mediana_mm.length - 1];
+      var xn = X(nte.fechas[nte.fechas.length - 1]), yn = Y(un);
+      g += '<circle cx="' + xn.toFixed(1) + '" cy="' + yn.toFixed(1) + '" r="4" fill="' + tk.sink + '"/>';
+      g += '<text x="' + (xn - 8).toFixed(1) + '" y="' + (yn + 16).toFixed(1) + '" text-anchor="end" font-size="12" font-family="' + tk.mono + '" fill="' + tk.sink + '">−' + Math.abs(un).toFixed(0) + ' mm</text>';
+    }
+    cont.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Serie temporal: el cuenco norte acumula ' + (nte ? Math.abs(nte.mediana_mm[nte.mediana_mm.length - 1]).toFixed(0) : '—') + ' mm y el de Fortín de Piedra ' + Math.abs(ult).toFixed(0) + ' mm entre 2021 y 2026; el pueblo se mantiene estable">' + g + '</svg>';
   }
   tokens = (function (orig) { return function () { var t = orig(); t.mono = getComputedStyle(raiz).getPropertyValue("--mono").trim(); return t; }; })(tokens);
 
